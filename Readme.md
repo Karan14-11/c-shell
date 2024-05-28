@@ -161,6 +161,21 @@ iMan ls
 iMan grep
 ```
 
+### 16. Signals
+Following 3 commands are direct keyboard input where Ctrl is Control key on keyboard (or it’s equivalent).
+
+#### Ctrl - C
+
+- Interrupt any currently running foreground process by sending it the SIGINT signal. It has no effect if no foreground process is currently running.
+
+#### Ctrl - D
+
+- Log out of your shell (after killing all processes) while having no effect on the actual terminal.
+
+#### Ctrl - Z
+
+- Push the (if any) running foreground process to the background and change it’s state from “Running” to “Stopped”. It has no effect on the shell if no foreground process is running.
+
 ## Notes
 
 Please note that the provided documentation is for reference, and specific command outputs may vary based on system configuration.

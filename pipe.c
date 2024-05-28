@@ -1,12 +1,10 @@
 #include "terminal.h"
 
-
-
 iv piping_fn(char *arr, iv vals)
 {
     int pipeno = 0;
     int ff[pipeno][2];
-            char* uk=malloc(MaxLimit);
+    char *uk = malloc(MaxLimit);
 
     int oldin = dup(0);
     int oldout = dup(1);
@@ -18,8 +16,10 @@ iv piping_fn(char *arr, iv vals)
     }
     int pipen[pipeno][2];
     for (int i = 0; i < pipeno; i++)
-       {if( pipe(pipen[i])==-1)
-       assert(0);}
+    {
+        if (pipe(pipen[i]) == -1)
+            assert(0);
+    }
     char *inp = malloc(MaxLimit);
     int c = 0;
     while (1)
@@ -48,7 +48,7 @@ iv piping_fn(char *arr, iv vals)
         {
             dup2(pipen[i][1], 1);
             close(pipen[i][1]);
-            vals.pipe=1;
+            vals.pipe = 1;
 
             // printf("dfghj\n");
             // printf("%d\n",ff[i][1]);
@@ -57,31 +57,31 @@ iv piping_fn(char *arr, iv vals)
         else if (i == pipeno)
         {
 
-            vals.pipe=1;
+            vals.pipe = 1;
             // dup2(oldout,1);
             // fflush(stdout);
-            int y=dup2(pipen[i - 1][0], STDIN_FILENO);
+            int y = dup2(pipen[i - 1][0], STDIN_FILENO);
             // char ao= EOF;
             // write(pipen[i-1][1],&ao,1);
 
-            close(pipen[i-1][0]);
+            close(pipen[i - 1][0]);
 
             // close(pipen[i-1][1]);
             // printf(EOF);
-            dup2(oldout, 1); 
-            // printf("%dasdf\n",y);           
+            dup2(oldout, 1);
+            // printf("%dasdf\n",y);
             // printf("\nHERE\n%s\n",uk);
             // close(0);
             // ff[i - 1][0] = close(pipen[i - 1][0]);gc
             // printf("%d\n",ff[i-1][0]);
             // exit(EXIT_SUCCESS);
             // close(pipen[i-1][0]);
-        vals.gl=pipen[i-1][0];
-        // printf("ok%d\n",pipen[i-1][1]);
+            vals.gl = pipen[i - 1][0];
+            // printf("ok%d\n",pipen[i-1][1]);
         }
         else
         {
-            vals.pipe=1;
+            vals.pipe = 1;
             // close(pipen[i - 1][1]);
             dup2(pipen[i - 1][0], 0);
             close(pipen[i - 1][0]);
@@ -93,14 +93,16 @@ iv piping_fn(char *arr, iv vals)
         // printf("\n");
         // printf(EOF);
         char o[1];
-        o[0]=EOF;
-        if(i){
-        int you=write(pipen[i-1][1],o,1);
-        close(pipen[i-1][1]);
-        assert(you);}
+        o[0] = EOF;
+        if (i)
+        {
+            int you = write(pipen[i - 1][1], o, 1);
+            close(pipen[i - 1][1]);
+            assert(you);
+        }
         // close(pipen[i][1]);
     }
-    vals.pipe=0;
+    vals.pipe = 0;
 
     // fflush(stdout);
     dup2(oldin, 0);
