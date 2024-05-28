@@ -1,0 +1,5 @@
+seek main ~
+seek main .
+seek m .
+seek fg ~
+iMan sleep
