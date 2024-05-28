@@ -1,5 +1,5 @@
 #include "terminal.h"
-#include "functions.h"
+#include "peek_flag.c"
 
 int directoryqsort(const struct dirent **a, const struct dirent **b)
 {
@@ -36,7 +36,7 @@ iv peek_fn(char *str, int start, iv vals)
     char *dir_path = malloc(MaxLimit);
     int c = 0;
     int home_len = strlen(vals.start_dir);
-    if (str[start] == '~')
+    if (str[start] == '~' )
     {
         start++;
         for (int i = 0; i < home_len; i++)
@@ -121,7 +121,7 @@ iv peek_fn(char *str, int start, iv vals)
         }
     }
 
-    else if (str[start] == '.' && str[start + 1] != '.')
+    else if (str[start] == '.' && str[start + 1] != '.'|| str[start]=='\0' || str[start]=='\n')
     {
         start++;
         char *a = finding_current_directory();
@@ -208,7 +208,7 @@ iv peek_fn(char *str, int start, iv vals)
         char *a = finding_current_directory();
         home_len = strlen(a);
         char *b = finding_shell_directory(vals.start_dir);
-        if (b[0] == '\0')
+        if (b[0] = '\0')
         {
             perror("ALREADY IN HOME DIRECTORY__NO PARENT DIRECTORY\n");
             free(b);

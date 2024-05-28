@@ -1,12 +1,8 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv paste_fn(char *str, int start, iv vals)
 {
     FILE *fno;
-    int aaa = strlen(str);
-    str[aaa]='\0';
-    start++;
     FILE *fptr;
     char *a = malloc(MaxLimit);
     strcpy(a, vals.start_dir);

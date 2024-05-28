@@ -1,10 +1,11 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv backgrnd_fn(char *arr, int start, iv vals)
 {
     char *back_pr = malloc(MaxLimit);
     int i = start;
+    int pid;
+    vals.ampers=1;
     int c = 0;
     while (arr[i] != '&')
     {
@@ -23,7 +24,7 @@ iv backgrnd_fn(char *arr, int start, iv vals)
     int y = fork();
     if (y != 0)
     {
-        printf("%d\n",y);
+        // printf("%d\n",y);
 
         char *name[] = {
             "/bin/bash",
@@ -32,16 +33,21 @@ iv backgrnd_fn(char *arr, int start, iv vals)
             NULL};
         if (fork() == 0)
         {
+            setpgid(0, 0);
 
             execvp(name[0], name);
         }
         else
         {
+            pid=y;
+                    printf("%d\n", pid);
+
             wait(NULL);
         }
     }
     else
     {
+        // pid = getpid();
 
         char *name[] = {
             "/bin/bash",
@@ -50,9 +56,12 @@ iv backgrnd_fn(char *arr, int start, iv vals)
             NULL};
 
         wait(NULL);
+        setpgid(0, 0);
+
         execvp(name[0], name);
     }
 
-    vals.list = add_node_ll(vals.list,y,back_pr);
+    vals = add_bg(vals, y, back_pr);
+    vals.list = add_node_ll(vals.list, y, back_pr);
     return vals;
 }

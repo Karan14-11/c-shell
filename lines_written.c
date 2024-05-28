@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 lv check_lines(FILE *fptr)
 {

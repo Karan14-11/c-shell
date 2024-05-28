@@ -1,11 +1,13 @@
 #include "terminal.h"
-#include "functions.h"
+#include "no_ascee.c"
+#include "read_lines.c"
+#include "lines_written.c"
 
-
-iv write_com(char *inp, iv vals)
+char* same(iv vals)
 {
-    FILE *fno;
-    FILE *fptr;
+   
+    int num = 1;
+    FILE* fptr;
     char *a = malloc(MaxLimit);
     strcpy(a, vals.start_dir);
     int length = strlen(a);
@@ -21,6 +23,82 @@ iv write_com(char *inp, iv vals)
     a[length + 8] = '\0';
 
     char *b = malloc(MaxLimit);
+    strcpy(b, vals.start_dir);
+    int lengthb = strlen(b);
+    b[lengthb] = '/';
+    b[lengthb + 1] = 'n';
+    b[lengthb + 2] = 'o';
+    b[lengthb + 3] = 's';
+    b[lengthb + 4] = '.';
+    b[lengthb + 5] = 't';
+    b[lengthb + 6] = 'x';
+    b[lengthb + 7] = 't';
+    b[lengthb + 8] = '/';
+    b[lengthb + 8] = '\0';
+
+    fptr = fopen(b,"r");
+    char* value = readLine(fptr);
+    fclose(fptr);
+    int startline = strtoint(value);
+    startline%=100;
+    // printf("%d\nHERE",num);
+    startline-=num;
+    // startline++;
+    startline+=15;
+    startline%=15;
+    fptr = fopen(a,"r");
+    for(int i=0;i<=startline;i++)
+    value = readLine(fptr);
+    fclose(fptr);
+    free(a);
+    free(b);
+
+    // vals = tokenise(value,vals);
+    // vals = write_com(value,vals);
+    return value;
+
+}
+
+iv write_com(char *inp, iv vals)
+{
+    char* okokok= same(vals);
+    int alen = strlen(inp);
+    int blen = strlen(okokok);
+    for(int i=0;i<=alen;i++)
+    {
+        if(inp[i]=='\n')
+        {
+            inp[i]='\0';
+            break;
+        }
+    }
+    for(int i=0;i<=blen;i++)
+    {
+        if(okokok[i]=='\n')
+        {
+            okokok[i]='\0';
+            break;
+        }
+    }
+    if(strcmp(okokok,inp)==0)
+        return vals;
+    FILE *fno;
+    FILE *fptr;
+    char *a = malloc(100);
+    strcpy(a, vals.start_dir);
+    int length = strlen(a);
+    a[length] = '/';
+    a[length + 1] = 'p';
+    a[length + 2] = 'a';
+    a[length + 3] = 's';
+    a[length + 4] = '.';
+    a[length + 5] = 't';
+    a[length + 6] = 'x';
+    a[length + 7] = 't';
+    a[length + 8] = '/';
+    a[length + 8] = '\0';
+
+    char *b = malloc(1000);
     strcpy(b, vals.start_dir);
     int lengthb = strlen(b);
     b[lengthb] = '/';
@@ -89,12 +167,13 @@ iv write_com(char *inp, iv vals)
         }
         fclose(fptr);
         int o = line_val.start_line;
+        int gok = (line_val.start_line+1)%15;
         strcpy(file_buf[o], inp);
         char *type = malloc(10);
         type[0] = '1';
         type[1] = '5';
-        type[2] = notoas((line_val.start_line + 1) / 10);
-        type[3] = notoas((line_val.start_line + 1) % 10);
+        type[2] = notoas(gok / 10);
+        type[3] = notoas(gok % 10);
         type[4] = '\0';
         fno = fopen(b, "w");
         fwrite(type, 1, strlen(type), fno);

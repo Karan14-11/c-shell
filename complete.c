@@ -1,51 +1,32 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv checking_comp(iv vals)
 {
     int status, pidq;
+    int tp = 0;
     ll *temp = vals.list->start;
-    if (temp == NULL)
+    while (temp != NULL)
     {
-        return vals;
-    }
-    if ((pidq = waitpid(temp->pid, &status, WNOHANG)) == -1)
-    {
-        perror("wait() error");
-        ll *a = temp;
-        vals.list->start = temp->nextnode;
-        free(a);
-    }
-    else if (pidq != 0)
-    {
-        if (WIFEXITED(status))
-            printf("%s  exited with status of%d (%d)\n",temp->name, WEXITSTATUS(status), temp->pid);
-        else
-            printf("%s  exited  with error and status of%d (%d)\n",temp->name, WEXITSTATUS(status), temp->pid);
-        // ll *a = temp;
-        vals.list->start = temp->nextnode;
-        // free(a);
-    }
-    // temp = vals.list->start;
-    while (temp->nextnode != NULL)
-    {
-
-        if ((pidq = waitpid(temp->nextnode->pid, &status, WNOHANG)) == -1)
+        if (temp->dummy == 0)
         {
-            perror("wait() error");
+            temp = temp->nextnode;
+            continue;
         }
-        else if (pidq != 0)
+        pidq = waitpid(temp->pid, &status, WNOHANG);
+        // if (pidq == 0)
+        // {
+        //     temp->dummy = 0;
+        // }
+        if (pidq > 0)
         {
-            if (WIFEXITED(status))
-            printf("%s  exited with status of %d (%d)\n",temp->name, WEXITSTATUS(status), temp->pid);
-        else
-            printf("%s  exited  with error and status of %d (%d)\n",temp->name, WEXITSTATUS(status), temp->pid);
-            // ll *a = temp->nextnode;
-            // free(a);
-            // temp->nextnode = temp->nextnode->nextnode;
+            int ay;
+            // printf("TYT%d\n", pidq);
+            ay = WIFEXITED(status);
+            printf("%s  exited with status of %d (%d)\n", temp->name, ay, temp->pid);
+            temp->dummy=0;
         }
-
-        
+        temp=temp->nextnode;
     }
+    
     return vals;
 }

@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 SF flag_check_s(char *str, int start)
 {
@@ -28,6 +27,7 @@ SF flag_check_s(char *str, int start)
             if(str[start]=='f')
             ret.fflag=1;
             start++;
+            ret.spaced++;
             continue;            
         }
         break;

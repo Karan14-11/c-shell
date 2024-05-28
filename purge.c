@@ -1,12 +1,8 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv purge_fn(char* str,int start,iv vals)
 {
     FILE *fno;
-    int linel = strlen(str);
-    str[linel]='\0';
-    start++;
     FILE *fptr;
     char *a = malloc(MaxLimit);
     strcpy(a, vals.start_dir);

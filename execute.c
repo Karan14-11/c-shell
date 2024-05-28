@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv execute_fn(char* str, int start ,iv vals)
 {
@@ -47,8 +46,10 @@ iv execute_fn(char* str, int start ,iv vals)
     fclose(fptr);
     int startline = strtoint(value);
     startline%=100;
-    startline+=num;
-    startline--;
+    // printf("%d\nHERE",num);
+    startline-=num;
+    // startline++;
+    startline+=15;
     startline%=15;
     fptr = fopen(a,"r");
     for(int i=0;i<=startline;i++)
@@ -57,12 +58,7 @@ iv execute_fn(char* str, int start ,iv vals)
     free(a);
     free(b);
     vals = tokenise(value,vals);
+    vals = write_com(value,vals);
     return vals;
-
-
-
-    
-
-
 
 }

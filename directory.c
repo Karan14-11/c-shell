@@ -1,6 +1,5 @@
 #include "terminal.h"
 
-#include "functions.h"
 
 
 int starting_terminal()
@@ -10,10 +9,9 @@ int starting_terminal()
     char *host_name = malloc(MaxLimit);
     int check_host = gethostname(host_name, MaxLimit);
     if (check_host && check_user == 0)
-        return 0;
+        exit(1);
 
     printf("<%s@%s:~", user_name, host_name);
-    return 1;
 }
 
 char *finding_shell_directory(char *h_dir)
@@ -22,6 +20,8 @@ char *finding_shell_directory(char *h_dir)
     int hl = strlen(h_dir);
     char *c_dir = finding_current_directory();
     int cl = strlen(c_dir);
+    if(cl<hl)
+        return NULL;
     for (int i = 0; i < hl; i++)
     {
         if (h_dir[i] != c_dir[i])
@@ -44,7 +44,7 @@ char *finding_current_directory()
 {
     char directory[MaxLimit];
     getcwd(directory, sizeof(directory));
-    char *return_val = malloc(100 + sizeof(directory));
+    char *return_val = malloc(MaxLimit);
     strcpy(return_val, directory);
 
     return return_val;

@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 char *readLine(FILE *file)
 {

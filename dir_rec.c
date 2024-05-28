@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 int dir_rec(char *path, char *rel_path, int y, int c, char *name)
 {
@@ -41,17 +40,24 @@ int dir_rec(char *path, char *rel_path, int y, int c, char *name)
 
                 int ch = 1;
                 int i = 0;
+                char*io=malloc(MaxLimit);
+
                 while (current_directory->d_name[i] != '\0' && current_directory->d_name[i] != '.')
                 {
+                    io[i]=current_directory->d_name[i]; 
 
-                    if (current_directory->d_name[i] != name[i])
-                    {
+                    // if (current_directory->d_name[i] != name[i])
+                    // {
 
-                        ch = 0;
-                        break;
-                    }
+                    //     ch = 0;
+                    //     break;
+                    // }
                     i++;
                 }
+                io[i]='\0';
+                
+                if(strcmp(io,name)!=0)
+                ch=0;
                 if (ch)
                 {
                     printf("\033[1;34m%s\n\033[0m", relc_path);

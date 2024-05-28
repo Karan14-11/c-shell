@@ -1,30 +1,67 @@
 #include "terminal.h"
-#include "functions.h"
-
+#include "warp.c"
+#include "peek.c"
+#include "write_com.c"
+#include "paste.c"
+#include "backgrnd_fn.c"
+#include "proclore.c"
+#include "seek.c"
+#include "purge.c"
+#include "execute.c"
+#include "redirection.c"
+#include "pipe.c"
+#include "activity.c"
+#include "ping.c"
+#include "fg.c"
+#include "bg.c"
+#include "neonate.c"
+#include "iman.c"
 
 iv default_terminal(char *arr, iv vals)
 {
-
     int length = strlen(arr);
     int ampersand = 0;
+    int piping = 0;
     for (int j = 0; j < length; j++)
     {
         if (arr[j] == '&')
         {
             ampersand = 1;
-            break;
+        }
+        if (arr[j] == '|')
+            piping = 1;
+    }
+
+    int def = 0;
+    int i = 0;
+    int bg = 0;
+    int fg = 0;
+    int warp = 0;
+    int neonate = 0;
+    int peek = 0;
+    int iman = 0;
+    int seek = 0;
+    int pastevents = 0;
+    int purge = 0;
+    int proclore = 0;
+    int activity = 0;
+    int execute = 0;
+    int ping = 0;
+    int redirection = -1;
+    // redirection = check_redirection(arr);
+    iv rets;
+    int oldin, oldout;
+    if (vals.pipe == 0)
+    {
+        oldin = dup(0);
+        oldout = dup(1);
+        if (redirection != -1 && piping == 0)
+        {
+            arr = do_redirection(arr);
         }
     }
 
-    int i = 0;
-    int warp = 0;
-    int peek = 0;
-    int seek = 0;
-    int pastevents = 0;
-    int purge;
-    int proclore = 0;
-    int execute = 0;
-    while (arr[i] != '\0')
+    while (arr[i] != '\0' && piping == 0)
     {
         if (arr[i] == '\t')
         {
@@ -44,6 +81,26 @@ iv default_terminal(char *arr, iv vals)
         else if (arr[i] == 'w' && arr[i + 1] == 'a' && arr[i + 2] == 'r' && arr[i + 3] == 'p')
         {
             warp = 1;
+            break;
+        }
+        else if (arr[i] == 'i' && arr[i + 1] == 'M' && arr[i + 2] == 'a' && arr[i + 3] == 'n')
+        {
+            iman = 1;
+            break;
+        }
+        else if (arr[i] == 'f' && arr[i + 1] == 'g')
+        {
+            fg = 1;
+            break;
+        }
+        else if (arr[i] == 'b' && arr[i + 1] == 'g')
+        {
+            bg = 1;
+            break;
+        }
+        else if (arr[i] == 'p' && arr[i + 1] == 'i' && arr[i + 2] == 'n' && arr[i + 3] == 'g')
+        {
+            ping = 1;
             break;
         }
         else if (arr[i] == 'e' && arr[i + 1] == 'x' && arr[i + 2] == 'i' && arr[i + 3] == 't')
@@ -69,9 +126,20 @@ iv default_terminal(char *arr, iv vals)
             purge = 1;
             break;
         }
+        else if (arr[i] == 'a' && arr[i + 1] == 'c' && arr[i + 2] == 't' && arr[i + 3] == 'i' && arr[i + 4] == 'v' && arr[i + 5] == 'i' && arr[i + 6] == 't' && arr[i + 7] == 'i' && arr[i + 8] == 'e' && arr[i + 9] == 's')
+        {
+
+            activity = 1;
+            break;
+        }
         else if (arr[i] == 'p' && arr[i + 1] == 'a' && arr[i + 2] == 's' && arr[i + 3] == 't' && arr[i + 4] == 'e' && arr[i + 5] == 'v' && arr[i + 6] == 'e' && arr[i + 7] == 'n' && arr[i + 8] == 't' && arr[i + 9] == 's' && arr[i + 10] == ' ' && arr[i + 11] == 'e' && arr[i + 12] == 'x' && arr[i + 13] == 'e' && arr[i + 14] == 'c' && arr[i + 15] == 'u' && arr[i + 16] == 't' && arr[i + 17] == 'e')
         {
             execute = 1;
+            break;
+        }
+        else if (arr[i] == 'n' && arr[i + 1] == 'e' && arr[i + 2] == 'o' && arr[i + 3] == 'n' && arr[i + 4] == 'a' && arr[i + 5] == 't' && arr[i + 6] == 'e' && arr[i + 7] == ' ' && arr[i + 8] == '-' && arr[i + 9] == 'n')
+        {
+            neonate = 1;
             break;
         }
         else if (arr[i] == 'p' && arr[i + 1] == 'a' && arr[i + 2] == 's' && arr[i + 3] == 't' && arr[i + 4] == 'e' && arr[i + 5] == 'v' && arr[i + 6] == 'e' && arr[i + 7] == 'n' && arr[i + 8] == 't' && arr[i + 9] == 's')
@@ -89,13 +157,41 @@ iv default_terminal(char *arr, iv vals)
             break;
     }
 
-    if (warp == 1 && ampersand == 0)
+    if (piping == 1)
+    {
+        vals = piping_fn(arr, vals);
+    }
+    else if (activity == 1)
+    {
+        vals = activity_fn(arr, i, vals);
+    }
+    else if (warp == 1 && ampersand == 0)
     {
         vals = warp_fn(arr, i, vals);
+    }
+    else if (iman == 1 && ampersand == 0)
+    {
+        vals = iman_fn(arr, i, vals);
+    }
+    else if (neonate == 1 && ampersand == 0)
+    {
+        vals = neonate_fn(arr, i, vals);
+    }
+    else if (ping == 1)
+    {
+        vals = ping_fn(arr, i, vals);
     }
     else if (peek == 1 && ampersand == 0)
     {
         vals = peek_fn(arr, i, vals);
+    }
+    else if (fg == 1 && ampersand == 0)
+    {
+        vals = fg_fn(arr, i, vals);
+    }
+    else if (bg == 1 && ampersand == 0)
+    {
+        vals = bg_fn(arr, i, vals);
     }
     else if (seek == 1 && ampersand == 0)
     {
@@ -119,22 +215,36 @@ iv default_terminal(char *arr, iv vals)
     }
     else if (execute == 1)
     {
-        
+
         vals = execute_fn(arr, i, vals);
-        vals.pe=2;
+        vals.pe = 2;
     }
     else
     {
         if (ampersand == 0)
         {
+
+            if (vals.pipe == 0)
+            {
+                int oldin1 = dup(0);
+                int oldout1 = dup(1);
+            }
             char *name[] = {
                 "/bin/bash",
                 "-c",
                 arr,
                 NULL};
-            if (fork() == 0)
+            int you = fork();
+            // ctrlznoo = you;
+            strcpy(globz,arr);
+            if (you == 0)
+            {
+                setpgid(0,0);
                 execvp(name[0], name);
-            wait(NULL);
+            }
+            ctrlznoo = you;
+            int status;
+            waitpid(you,&status,WUNTRACED);
         }
         else
         {
@@ -156,8 +266,15 @@ iv default_terminal(char *arr, iv vals)
         }
         ijk[yi++] = '\0';
         int pikachu = strtoint(ijk);
-        if(pikachu>2)
-        vals.tym=pikachu;
+        if (pikachu > 2)
+            vals.tym = pikachu;
     }
+    if (vals.pipe)
+    {
+        fflush(stdout);
+        dup2(oldin, 0);
+        dup2(oldout, 1);
+    }
+
     return vals;
 }

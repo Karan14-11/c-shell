@@ -1,6 +1,5 @@
 #include "terminal.h"
-#include "functions.h"
-
+#include "warp_run.c"
 
 iv warp_tok(char *str, iv vals)
 {

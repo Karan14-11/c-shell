@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv warp_run(char *str, iv vals)
 {
@@ -119,13 +118,13 @@ iv warp_run(char *str, iv vals)
         {
             char *test = finding_current_directory();
             char *test2 = finding_shell_directory(vals.start_dir);
-            if (test2[0] == '\0')
-            {
-                free(test);
-                free(test2);
-                perror("Already in HOME DIRECTORY\n");
-            }
-            else
+            // if (test2[0] == '\0')
+            // {
+            //     free(test);
+            //     free(test2);
+            //     perror("Already in HOME DIRECTORY\n");
+            // }
+            // else
             {
                 int len = strlen(test);
                 int k = len;

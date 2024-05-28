@@ -1,20 +1,24 @@
 #include "terminal.h"
-#include "functions.h"
-
+#include "seek_flag.c"
+#include "dir_rec.c"
+#include "fil_rec.c"
+#include "fil_work.c"
+#include "dir_work.c"
 
 iv seek_fn(char *str, int start, iv vals)
 {
     int countd = 0;
-    int countf=0;
+    int countf = 0;
     start += 5;
     SF check;
+    struct stat info;
 
     check = flag_check_s(str, start);
     int sp = check.spaced;
-    start += sp;
+    start += (sp);
     while (1)
     {
-        if (str[start] != ' ' && str[start] != '\n' && str[start] != '\t')
+        if (str[start] != ' ' && str[start] != '\t')
             break;
         start++;
     }
@@ -22,9 +26,12 @@ iv seek_fn(char *str, int start, iv vals)
     int n = 0;
     while (str[start] != ' ')
     {
+        if (str[start] == '\n' || str[start] == '\0')
+            break;
         name[n++] = str[start++];
     }
     name[n] = '\0';
+    // printf("%sHH\n",name);
     int length = strlen(str);
     char *dir_path = malloc(MaxLimit);
     char *rel_path = malloc(MaxLimit);
@@ -32,7 +39,7 @@ iv seek_fn(char *str, int start, iv vals)
     int y = 0;
     int home_len = strlen(vals.start_dir);
     start++;
-    if (str[start] == '~')
+    if (str[start] == '~' || str[start] == '\n')
     {
         rel_path[y++] = '~';
         start++;
@@ -47,7 +54,7 @@ iv seek_fn(char *str, int start, iv vals)
         }
         dir_path[c] = '\0';
         rel_path[y] = '\0';
-        if (check.dflag ==0&& check.fflag==0)
+        if (check.dflag == 0 && check.fflag == 0)
         {
             countd += dir_rec(dir_path, rel_path, y, c, name);
             countf += fil_rec(dir_path, rel_path, y, c, name);
@@ -80,7 +87,7 @@ iv seek_fn(char *str, int start, iv vals)
 
         dir_path[c] = '\0';
         rel_path[y] = '\0';
-        if (check.dflag ==0&& check.fflag==0)
+        if (check.dflag == 0 && check.fflag == 0)
         {
             countd += dir_rec(dir_path, rel_path, y, c, name);
             countf += fil_rec(dir_path, rel_path, y, c, name);
@@ -102,12 +109,12 @@ iv seek_fn(char *str, int start, iv vals)
         char *a = finding_current_directory();
         home_len = strlen(a);
         char *b = finding_shell_directory(vals.start_dir);
-        if (b[0] == '\0')
-        {
-            perror("ALREADY IN HOME DIRECTORY__NO PARENT DIRECTORY\n");
-            free(b);
-        }
-        else
+        // if (b[0] = '\0')
+        // {
+        //     perror("ALREADY IN HOME DIRECTORY__NO PARENT DIRECTORY\n");
+        //     free(b);
+        // }
+        // else
         {
             free(b);
             int k = home_len;
@@ -127,10 +134,11 @@ iv seek_fn(char *str, int start, iv vals)
                 rel_path[y++] = str[i];
             }
             dir_path[c] = '\0';
-            if (check.dflag ==0&& check.fflag==0)
+            if (check.dflag == 0 && check.fflag == 0)
             {
                 countd += dir_rec(dir_path, rel_path, y, c, name);
                 countf += fil_rec(dir_path, rel_path, y, c, name);
+
             }
             else if (check.dflag == 0)
             {
@@ -145,7 +153,7 @@ iv seek_fn(char *str, int start, iv vals)
     else if (str[start] == '-')
     {
         start++;
-        rel_path[y++]='-';
+        rel_path[y++] = '-';
         home_len = strlen(vals.last_dir);
         for (int i = 0; i < home_len; i++)
             dir_path[c++] = vals.last_dir[i];
@@ -159,7 +167,7 @@ iv seek_fn(char *str, int start, iv vals)
         }
         dir_path[c] = '\0';
 
-       if (check.dflag ==0&& check.fflag==0)
+        if (check.dflag == 0 && check.fflag == 0)
         {
             countd += dir_rec(dir_path, rel_path, y, c, name);
             countf += fil_rec(dir_path, rel_path, y, c, name);
@@ -173,20 +181,19 @@ iv seek_fn(char *str, int start, iv vals)
             countf += dir_rec(dir_path, rel_path, y, c, name);
         }
     }
-    if(countd==1&&countf==1)
-        printf("NO MATCH FOUND!");
-    if(check.dflag==1&&check.fflag==1)
-        printf("INVALID FLAGS");
-    if(countf==1&&countd==0&& check.eflag==1)
+    if (countd == 0 && countf == 0)
+        printf("NO MATCH FOUND!\n");
+    if (check.dflag == 1 && check.fflag == 1)
+        printf("INVALID FLAGS\n");
+    if (countf == 1 && countd == 0 && check.eflag == 1)
     {
         fil_work(dir_path, rel_path, y, c, name);
     }
-    if(countf==0&&countd==1&& check.eflag==1)
+    if (countf == 0 && countd == 1 && check.eflag == 1)
     {
         dir_work(dir_path, rel_path, y, c, name);
     }
-    
-    
+
     free(dir_path);
     return vals;
 }

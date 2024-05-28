@@ -1,10 +1,10 @@
 #include "terminal.h"
-#include "functions.h"
 
 iv proclore_fn(char *str, int start, iv vals)
 {
     start += 9;
 
+    pid_t process_id;
     char *process_st;
     long long int virtual_memory;
     char *exec = malloc(MaxLimit);
@@ -39,7 +39,9 @@ iv proclore_fn(char *str, int start, iv vals)
     }
     else
         cpid = strtoint(given_pid);
+    char *path = malloc(MaxLimit);
     char *stat = malloc(MaxLimit);
+    char *status = malloc(MaxLimit);
     char *exe = malloc(MaxLimit);
     sprintf(stat, "/proc/%d/stat", cpid);
     sprintf(exe, "/proc/%d/exe", cpid);
@@ -59,6 +61,7 @@ iv proclore_fn(char *str, int start, iv vals)
         fgets(line, MaxLimit, fptr);
         int you = strlen(line);
         int index = 0;
+        int cc = 0;
         for (int i = 0; i < you; i++)
         {
             if (line[i] == '\n' || line[i] == ' ')

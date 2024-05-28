@@ -1,5 +1,5 @@
 #include "terminal.h"
-#include "functions.h"
+
 
 char notoas(int a)
 {
@@ -23,7 +23,6 @@ char notoas(int a)
         return '8';
     if (a == 9)
         return '9';
-    return '@';
 }
 
 int chartoint(char a)
@@ -48,7 +47,6 @@ int chartoint(char a)
         return 8;
     if (a == '9')
         return 9;
-    return -1;
 }
 
 int strtoint(char *a)
@@ -58,6 +56,8 @@ int strtoint(char *a)
     int ans = 0;
     for (int i = length - 1; i >= 0; i--)
     {
+        if(a[i]=='\t'||a[i]=='\n')
+        i--;
         ans += chartoint(a[i]) * j;
         j *= 10;
     }

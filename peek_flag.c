@@ -1,5 +1,4 @@
 #include "terminal.h"
-#include "functions.h"
 
 PF flag_check(char* str, int start)
 {

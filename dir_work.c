@@ -1,9 +1,7 @@
 #include "terminal.h"
-#include "functions.h"
 
 int dir_work(char *path, char *rel_path, int y, int c, char *name)
 {
-
     int ret = 0;
 
     struct dirent *current_directory;
@@ -15,7 +13,7 @@ int dir_work(char *path, char *rel_path, int y, int c, char *name)
         perror("");
     else
     {
-           
+
         while ((current_directory = readdir(dir_ptr)) != NULL)
         {
             y = x;
@@ -42,25 +40,29 @@ int dir_work(char *path, char *rel_path, int y, int c, char *name)
                 copy_path[c] = '\0';
 
                 int ch = 1;
-                int i=0;
+                int i = 0;
+                char *io = malloc(MaxLimit);
                 while (current_directory->d_name[i] != '\0' && current_directory->d_name[i] != '.')
                 {
 
-                    
-                    if (current_directory->d_name[i] != name[i])
-                    {
+                    io[i] = current_directory->d_name[i];
+                    // if (current_directory->d_name[i] != name[i])
+                    // {
 
-                        ch = 0;
-                        
-                        break;
+                    //     ch = 0;
 
-                    }
+                    //     break;
+                    // }
                     i++;
                 }
+                io[i]='\0';
+                if (strcmp(io, name) != 0)
+                    ch = 0;
                 if (ch)
-                    {
-                        chdir(copy_path);
-                    }
+                {
+                    chdir(copy_path);
+                    ret+=1;
+                }
                 if (strcmp(rel_path, relc_path) != 0)
                     ret += dir_work(copy_path, relc_path, y, c, name);
                 free(relc_path);
