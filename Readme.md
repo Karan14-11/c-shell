@@ -16,7 +16,7 @@ This project is a basic implementation of a shell in the C programming language.
    git clone https://github.com/your-username/c-shell.git
    cd c-shell
 
-2. Starting the naming server 
+2. Starting the shell
     ```bash 
     make clean;make
     ./shell
